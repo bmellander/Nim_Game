@@ -120,11 +120,13 @@
     {
         bool gameOver = false;
         bool playersTurn = false;
-        Console.WriteLine("\nSkriv in siffran 1 om du vill börja, annat för att datorn ska börja: ");
+
+        Console.WriteLine("\nSkriv in siffran 1 om du vill börja, annars startar datorn: ");
         if (Console.ReadLine().Equals("1"))
         {
             playersTurn = true;
         }
+
         while (!gameOver)
         {
             createGame(noOfSticksEachRow);
@@ -134,6 +136,7 @@
                 {
                     string[] userChoice = getUserChoice("Spelares");
                     int tooBigOrSmallNumber = noOfSticksEachRow[int.Parse(userChoice[0]) - 1] - int.Parse(userChoice[1]);
+
                     if (tooBigOrSmallNumber > 5 || tooBigOrSmallNumber < 0)
                     {
                         Console.WriteLine("Du har tagit för många pinnar eller stoppat in för många pinnar!");
@@ -148,21 +151,43 @@
                 else
                 {
                     generateComputerMove(noOfSticksEachRow);
+                    playersTurn = true;
                 }
 
+                if (noOfSticksEachRow[0] == 0 && noOfSticksEachRow[1] == 0 && noOfSticksEachRow[2] == 0)
+                {
+                    gameOver = true;
+                    Console.WriteLine("\n" + (playersTurn ? "Datorn" : "Spelare") + " vann spelet!\n\n");
+
+                    
+                }
             }
             catch
             {
-
+                Console.WriteLine("Ogiltigt val, försök igen.");
             }
-
         }
     }
 
+
     private static void generateComputerMove(int[] noOfSticksEachRow)
     {
-        throw new NotImplementedException();
+        Random random = new Random();
+        int heapIndex;
+        int sticksToRemove;
+
+        do
+        {
+            heapIndex = random.Next(0, 3); // Slumpa en rad (hög)
+            sticksToRemove = random.Next(1, noOfSticksEachRow[heapIndex] + 1); // Slumpa antal stickor
+
+        } while (sticksToRemove > 5 || sticksToRemove > noOfSticksEachRow[heapIndex]);
+
+        noOfSticksEachRow[heapIndex] -= sticksToRemove;
+
+        Console.WriteLine("Datorn valde rad " + (heapIndex + 1) + " och tog bort " + sticksToRemove + " stickor.");
     }
+
 
     private static int menu()
     {
